@@ -7,11 +7,16 @@
 #-------------------------------------------------------------------------------
 
 #  Installed required packages
-dnf -y install gcc gcc-c++ perl-Devel-Peek perl-Encode-devel perl-open expat-devel mariadb mariadb-server nginx spawn-fcgi perl-CPAN wget
+dnf -y install gcc gcc-c++ expat-devel mariadb mariadb-server nginxperl perl-Devel-Peek perl-Encode-devel perl-open perl-CPAN spawn-fcgi wget
 # Can't install w3m
 # Error: 
 # Problem: conflicting requests
 #  - nothing provides perl(NKF) needed by w3m-0.5.3-50.git20210102.el8.x86_64
+
+# Install CPAN
+perl -MCPAN -e shell <<-EOI
+	yes
+EOI
 
 # Download the RT software
 cd /
@@ -19,24 +24,19 @@ wget https://download.bestpractical.com/pub/rt/release/rt-5.0.2.tar.gz
 tar xzvf rt-5.0.2.tar.gz
 cd rt-5.0.2/
 
-# Install CPAN
-perl -MCPAN -e shell <<-EOI
-	yes
-EOI
-
 # Check the dependencies
 make testdeps
 
-# Fix the dependencies
+# Fix the dependencies (may need to do more than once)
 make fixdeps
+
+exit
 
 # Install other dependencies
 perl -MCPAN -e 'install HTML::Element'  
 perl -MCPAN -e 'install HTML::TreeBuilder'  
 perl -MCPAN -e 'Text::Balanced module'
 perl -MCPAN -e 'MooX::late module'
-
-exit
 
 # Start the database
 systemctl enable mariadb
