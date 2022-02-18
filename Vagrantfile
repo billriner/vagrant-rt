@@ -44,8 +44,8 @@ Vagrant.configure("2") do |config|
  
   # Provisioning with a shell script -------------------------------------------
 
-  config.vm.provision "shell", path: "provision.sh"
-  config.vm.provision "shell", path: "nis.sh"
+  #config.vm.provision "shell", path: "provision.sh"
+  #config.vm.provision "shell", path: "nis.sh"
   #config.vm.provision "shell", path: "rt.sh"
 
 end
