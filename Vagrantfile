@@ -46,6 +46,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", path: "provision.sh"
   config.vm.provision "shell", path: "nis.sh"
-  config.vm.provision "shell", path: "rt.sh"
+  #config.vm.provision "shell", path: "rt.sh"
 
 end
