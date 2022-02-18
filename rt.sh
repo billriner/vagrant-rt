@@ -19,19 +19,22 @@ wget https://download.bestpractical.com/pub/rt/release/rt-5.0.2.tar.gz
 tar xzvf rt-5.0.2.tar.gz
 cd rt-5.0.2/
 
-# Run CPAN
+# Install CPAN
 perl -MCPAN -e shell <<-EOI
 	yes
 EOI
 
-# Install dependencies
+# Check the dependencies
+make testdeps
+
+# Fix the dependencies
+make fixdeps
+
+# Install other dependencies
 perl -MCPAN -e 'install HTML::Element'  
 perl -MCPAN -e 'install HTML::TreeBuilder'  
 perl -MCPAN -e 'Text::Balanced module'
 perl -MCPAN -e 'MooX::late module'
-
-# Check the dependencies
-make testdeps
 
 exit
 
