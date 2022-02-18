@@ -18,7 +18,6 @@ Vagrant.configure("2") do |config|
   config.vm.network "public_network", :bridge => 'en0: Ethernet', :mac => "525400b4c538"
 
   # Provider-specific configuration --------------------------------------------
-
   config.vm.provider "virtualbox" do |vb|
 
     # Name in the VirtualBox GUI
@@ -42,10 +41,9 @@ Vagrant.configure("2") do |config|
 
   end
  
-  # Provisioning with a shell script -------------------------------------------
-
-  #config.vm.provision "shell", path: "provision.sh"
-  #config.vm.provision "shell", path: "nis.sh"
-  #config.vm.provision "shell", path: "rt.sh"
+  # Provisioning with shell scripts --------------------------------------------
+  config.vm.provision "shell", path: "provision.sh"
+  config.vm.provision "shell", path: "nis.sh"
+  config.vm.provision "shell", path: "rt.sh"
 
 end
