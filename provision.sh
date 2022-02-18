@@ -9,8 +9,8 @@
 # Set the hostname
 hostnamectl set-hostname rt.csb.vanderbilt.edu
 
-# Delete the default route on the vagrant interface.
-ip route del default dev eth0
+# Delete the default route on the vagrant interface
+#ip route del default dev eth0
 
 # Disable SELinux
 setenforce 0
