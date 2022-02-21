@@ -8,10 +8,6 @@
 
 #  Installed required packages
 dnf -y install gcc gcc-c++ expat-devel mariadb mariadb-server nginx perl perl-Devel-Peek perl-Encode-devel perl-open perl-CPAN spawn-fcgi wget
-# Can't install w3m
-# Error: 
-# Problem: conflicting requests
-#  - nothing provides perl(NKF) needed by w3m-0.5.3-50.git20210102.el8.x86_64
 
 # Install CPAN
 perl -MCPAN -e shell <<-EOI
@@ -30,21 +26,19 @@ cd rt-5.0.2/
 # Check the dependencies
 make testdeps
 
+
 # Fix the dependencies (may need to do more than once)
-make fixdeps  <<-EOI
+make fixdeps <<-EOI
         y
-        y
-        y
-        y
+        n
+        n
+        n
         y
 EOI
-
-exit
 
 # Install other dependencies
 perl -MCPAN -e 'install HTML::Element'
 perl -MCPAN -e 'install HTML::FormatText::WithLinks::AndTables'
-perl -MCPAN -e 'LWP::Protocol::https'
 dnf -y install perl-LWP-Protocol-https
 dnf -y install perl-DBD-mysql
 
@@ -56,8 +50,8 @@ systemctl start mariadb
 mysql_secure_installation <<-EOI
 
 	y
-	<root_passwd>
-	<root_passwd>
+	<db_root_passwd>
+	<db_root_passwd>
 	y
 	y
 	y
@@ -68,8 +62,10 @@ EOI
 cd /rt-5.0.2/
 make install
 make initialize-database <<-EOI
-	<root_passwd>
+	<db_root_passwd>
 EOI
+
+# Create www-data user
 useradd www-data
 
 # Main RT site config file
@@ -120,7 +116,7 @@ Set($CanonicalizeRedirectURLs, 1);
 
 Set($DatabaseName, 'rt4');
 Set($DatabaseUser, 'rt_user');
-Set($DatabasePassword, 'f&Bh%P');
+Set($DatabasePassword, '<db_root_passwd>');
 
 # Use the below LDAP source for both authentication, as well as user
 # information
