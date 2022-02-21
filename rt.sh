@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 
 #  Installed required packages
-dnf -y install gcc gcc-c++ expat-devel mariadb mariadb-server nginxperl perl-Devel-Peek perl-Encode-devel perl-open perl-CPAN spawn-fcgi wget
+dnf -y install gcc gcc-c++ expat-devel mariadb mariadb-server nginx perl perl-Devel-Peek perl-Encode-devel perl-open perl-CPAN spawn-fcgi wget
 # Can't install w3m
 # Error: 
 # Problem: conflicting requests
@@ -24,34 +24,52 @@ wget https://download.bestpractical.com/pub/rt/release/rt-5.0.2.tar.gz
 tar xzvf rt-5.0.2.tar.gz
 cd rt-5.0.2/
 
+# Configure the software
+./configure
+
 # Check the dependencies
 make testdeps
 
 # Fix the dependencies (may need to do more than once)
-make fixdeps
+make fixdeps  <<-EOI
+        y
+        y
+        y
+        y
+        y
+EOI
 
 exit
 
 # Install other dependencies
-perl -MCPAN -e 'install HTML::Element'  
-perl -MCPAN -e 'install HTML::TreeBuilder'  
-perl -MCPAN -e 'Text::Balanced module'
-perl -MCPAN -e 'MooX::late module'
+perl -MCPAN -e 'install HTML::Element'
+perl -MCPAN -e 'install HTML::FormatText::WithLinks::AndTables'
+perl -MCPAN -e 'LWP::Protocol::https'
+dnf -y install perl-LWP-Protocol-https
+dnf -y install perl-DBD-mysql
 
 # Start the database
 systemctl enable mariadb
 systemctl start mariadb
 
 # Run secure installation
-mysql_secure_installation
+mysql_secure_installation <<-EOI
 
-# Configure the software
-./configure
+	y
+	<root_passwd>
+	<root_passwd>
+	y
+	y
+	y
+	y
+EOI
 
 # Install RT
 cd /rt-5.0.2/
 make install
-make initialize database
+make initialize-database <<-EOI
+	<root_passwd>
+EOI
 useradd www-data
 
 # Main RT site config file

@@ -15,7 +15,8 @@ Vagrant.configure("2") do |config|
   # Networking -----------------------------------------------------------------
 
   # Public network (1508 VLAN - MRB3 - 10.2.188.201)
-  config.vm.network "public_network", :bridge => 'en0: Ethernet', :mac => "525400b4c538"
+  config.vm.network "public_network"
+  #config.vm.network "public_network", :bridge => 'en0: Ethernet', :mac => "525400b4c538"
 
   # Provider-specific configuration --------------------------------------------
   config.vm.provider "virtualbox" do |vb|
@@ -42,8 +43,8 @@ Vagrant.configure("2") do |config|
   end
  
   # Provisioning with shell scripts --------------------------------------------
-  config.vm.provision "shell", path: "provision.sh"
-  config.vm.provision "shell", path: "nis.sh"
-  config.vm.provision "shell", path: "rt.sh"
+  #config.vm.provision "shell", path: "provision.sh"
+  #config.vm.provision "shell", path: "nis.sh"
+  #config.vm.provision "shell", path: "rt.sh"
 
 end
