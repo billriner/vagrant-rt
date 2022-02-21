@@ -226,8 +226,8 @@ EOI
 chown www-data.www-data  /opt/rt5/etc/RT_Config.pm
 chown -R www-data.www-data /opt/rt5/var/mason_data
 
-# Add packages for higher performance
-dnf install w3m elink links html2text lynx
+# Add packages for higher performance (only html2text will install)
+#dnf install w3m elink links html2text lynx
 
 # Enable and start the web server
 systemctl enable nginx
