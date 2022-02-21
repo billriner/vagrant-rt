@@ -70,7 +70,7 @@ useradd www-data
 
 # Main RT site config file
 mv /opt/rt5/local/etc/RT_SiteConfig.pm /opt/rt5/local/etc/RT_SiteConfig.pm.orig
-echo >>/opt/rt5/local/etc/RT_SiteConfig.pm <<-EOI
+echo >>/opt/rt5/local/etc/RT_SiteConfig.pm <<EOI
 use utf8;
 
 # Any configuration directives you include  here will override
@@ -188,43 +188,51 @@ Set($LogToFileNamed , "rt.log"); #log to rt.log
 EOI
 
 # Configure and start the webserver
-echo >> /etc/nginx/nginx.conf <<-EIO
+echo >> /etc/nginx/nginx.conf <<EOI
+server {
+	listen 80;
+	server_name helpdesk.csb.vanderbilt.edu
+	#server_name 10.0.64.54;
 
-	server {
-		listen 80;
-		server_name helpdesk.csb.vanderbilt.edu
-		#server_name 10.0.64.54;
+	access_log  /var/log/nginx/access.log;
 
-		access_log  /var/log/nginx/access.log;
+	location / {
+		fastcgi_param  QUERY_STRING       $query_string;
+		fastcgi_param  REQUEST_METHOD     $request_method;
+		fastcgi_param  CONTENT_TYPE       $content_type;
+		fastcgi_param  CONTENT_LENGTH     $content_length;
 
-		location / {
-			fastcgi_param  QUERY_STRING       $query_string;
-			fastcgi_param  REQUEST_METHOD     $request_method;
-			fastcgi_param  CONTENT_TYPE       $content_type;
-			fastcgi_param  CONTENT_LENGTH     $content_length;
+		fastcgi_param  SCRIPT_NAME        "";
+		fastcgi_param  PATH_INFO          $uri;
+		fastcgi_param  REQUEST_URI        $request_uri;
+		fastcgi_param  DOCUMENT_URI       $document_uri;
+		fastcgi_param  DOCUMENT_ROOT      $document_root;
+		fastcgi_param  SERVER_PROTOCOL    $server_protocol;
 
-			fastcgi_param  SCRIPT_NAME        "";
-			fastcgi_param  PATH_INFO          $uri;
-			fastcgi_param  REQUEST_URI        $request_uri;
-			fastcgi_param  DOCUMENT_URI       $document_uri;
-			fastcgi_param  DOCUMENT_ROOT      $document_root;
-			fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+		fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+		fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
 
-			fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
-			fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
-
-			fastcgi_param  REMOTE_ADDR        $remote_addr;
-			fastcgi_param  REMOTE_PORT        $remote_port;
-			fastcgi_param  SERVER_ADDR        $server_addr;
-			fastcgi_param  SERVER_PORT        $server_port;
-			fastcgi_param  SERVER_NAME        $server_name;
-			fastcgi_pass 10.0.64.54:9000;
-		}
+		fastcgi_param  REMOTE_ADDR        $remote_addr;
+		fastcgi_param  REMOTE_PORT        $remote_port;
+		fastcgi_param  SERVER_ADDR        $server_addr;
+		fastcgi_param  SERVER_PORT        $server_port;
+		fastcgi_param  SERVER_NAME        $server_name;
+		fastcgi_pass 10.0.64.54:9000;
 	}
+}
 EOI
 
+# Set proper ownership
+chown www-data.www-data  /opt/rt5/etc/RT_Config.pm
+chown -R www-data.www-data /opt/rt5/var/mason_data
+
+# Add packages for higher performance
+dnf install w3m elink links html2text lynx
+
+# Enable and start the web server
 systemctl enable nginx
 systemctl start nginx
 
 # Spawn the RT process 
-spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9000 -- /opt/rt5/sbin/rt-server.fcgi ; echo exit code $?
+spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9000 -- /opt/rt5/sbin/rt-server.fcgi ; echo exit code $? &
+
