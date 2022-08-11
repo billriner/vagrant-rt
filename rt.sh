@@ -26,7 +26,6 @@ cd rt-5.0.2/
 # Check the dependencies
 make testdeps
 
-
 # Fix the dependencies (may need to do more than once)
 make fixdeps <<-EOI
         y
