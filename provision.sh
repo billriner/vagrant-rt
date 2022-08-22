@@ -37,8 +37,8 @@ nameserver 10.2.189.78
 nameserver 10.4.162.82
 EOI
 
-# Update all of the packages.
-#dnf -y update
+# Update all of the packages
+dnf -y update
 
 # Install the EPEL repo
 dnf -y install https://mirror.umd.edu/fedora/epel/epel-release-latest-8.noarch.rpm
