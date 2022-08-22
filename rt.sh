@@ -26,7 +26,6 @@ cd rt-5.0.2/
 # Check the dependencies
 make testdeps
 
-
 # Fix the dependencies (may need to do more than once)
 make fixdeps <<-EOI
         y
@@ -37,10 +36,15 @@ make fixdeps <<-EOI
 EOI
 
 # Install other dependencies
-perl -MCPAN -e 'install HTML::Element'
-perl -MCPAN -e 'install HTML::FormatText::WithLinks::AndTables'
-dnf -y install perl-LWP-Protocol-https
-dnf -y install perl-DBD-mysql
+dnf -y install perl-LWP-Protocol-https perl-DBD-mysql
+dnf -y install "perl(DBD::mysql)" "perl(LWP::Protocol::https)"
+perl -MCPAN -e shell <<-EOI
+	install HTML::Element
+	install HTML::FormatText
+	install HTML::TreeBuilder
+	install HTML::FormatText::WithLinks
+	install HTML::FormatText::WithLinks::AndTables
+EOI
 
 # Start the database
 systemctl enable mariadb
