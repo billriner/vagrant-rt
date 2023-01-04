@@ -18,7 +18,7 @@ EOI
 cd /
 wget https://download.bestpractical.com/pub/rt/release/rt-5.0.2.tar.gz
 tar xvf rt-5.0.3.tar.gz
-cd rt-5.0.2/
+cd rt-5.0.3/
 
 # Configure the software
 ./configure
