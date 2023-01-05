@@ -39,6 +39,7 @@ EOI
 dnf -y install perl-LWP-Protocol-https perl-DBD-mysql
 dnf -y install "perl(DBD::mysql)" "perl(LWP::Protocol::https)"
 perl -MCPAN -e shell <<-EOI
+	install GnuPG::Interface
 	install HTML::Element
 	install HTML::FormatText
 	install HTML::TreeBuilder
