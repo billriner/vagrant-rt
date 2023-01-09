@@ -6,19 +6,39 @@
 #
 #-------------------------------------------------------------------------------
 
+# Disable SELinux
+sed -i 's/=enforcing/=disabled/' /etc/selinux/config
+
+# Enable the PowerTools repo (ol8_codeready_builder for OL 8)
+dnf config-manager --set-enabled ol8_codeready_builder
+
+# Install epel
+dnf -y install epel-release
+
 #  Installed required packages
-dnf -y install gcc gcc-c++ expat-devel mariadb mariadb-server nginx perl perl-Devel-Peek perl-Encode-devel perl-open perl-CPAN spawn-fcgi wget
+dnf -y install gcc gcc-c++ expat-devel mariadb mariadb-server nginx perl perl-Devel-Peek perl-Encode-devel perl-open perl-CPAN spawn-fcgi wget w3m
+
+dnf -y install expat gd graphviz openssl expat-devel gd-devel \
+  openssl-devel perl-YAML wget screen \
+  mod_fcgid perl-libwww-perl perl-Plack perl-GD \
+  perl-GnuPG-Interface perl-GraphViz perl-Crypt-SMIME  \
+  perl-String-ShellQuote perl-Crypt-X509 perl-LWP-Protocol-https graphviz-devel
 
 # Install CPAN
 perl -MCPAN -e shell <<-EOI
 	yes
 EOI
 
+# Install cpanm and configure RT to use it to resolve dependancies
+curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+cpanm --self-upgrade --sudo
+export RT_FIX_DEPS_CMD=`which cpanm`
+
 # Download the RT software
 cd /
-wget https://download.bestpractical.com/pub/rt/release/rt-5.0.2.tar.gz
-tar xzvf rt-5.0.2.tar.gz
-cd rt-5.0.2/
+wget https://download.bestpractical.com/pub/rt/release/rt-5.0.3.tar.gz
+tar xvf rt-5.0.3.tar.gz
+cd rt-5.0.3/
 
 # Configure the software
 ./configure
@@ -36,9 +56,11 @@ make fixdeps <<-EOI
 EOI
 
 # Install other dependencies
+cpanm --force Date::Extract
 dnf -y install perl-LWP-Protocol-https perl-DBD-mysql
 dnf -y install "perl(DBD::mysql)" "perl(LWP::Protocol::https)"
 perl -MCPAN -e shell <<-EOI
+	install GnuPG::Interface
 	install HTML::Element
 	install HTML::FormatText
 	install HTML::TreeBuilder
@@ -54,8 +76,8 @@ systemctl start mariadb
 mysql_secure_installation <<-EOI
 
 	y
-	<db_root_passwd>
-	<db_root_passwd>
+	sbdb
+	sbdb
 	y
 	y
 	y
@@ -63,18 +85,18 @@ mysql_secure_installation <<-EOI
 EOI
 
 # Install RT
-cd /rt-5.0.2/
+cd /rt-5.0.3/
 make install
 make initialize-database <<-EOI
-	<db_root_passwd>
+	sbdb
 EOI
 
 # Create www-data user
 useradd www-data
 
 # Main RT site config file
-mv /opt/rt5/local/etc/RT_SiteConfig.pm /opt/rt5/local/etc/RT_SiteConfig.pm.orig
-echo >>/opt/rt5/local/etc/RT_SiteConfig.pm <<EOI
+mv /opt/rt5/etc/RT_SiteConfig.pm /opt/rt5/etc/RT_SiteConfig.pm.orig
+echo >>/opt/rt5/etc/RT_SiteConfig.pm <<EOI
 use utf8;
 
 # Any configuration directives you include  here will override
@@ -103,9 +125,6 @@ use utf8;
 # directory.  All files ending in ".pm" will be parsed, in alphabetical order,
 # after this file is loaded.
 
-#Set( $rtname, 'example.com');
-#Set($rtname, 'vm-infr-helpdesk');
-# Tag for RT emails, match previous server
 Set($rtname, 'CSB Help Desk');
 Set($WebDomain, "helpdesk.csb.vanderbilt.edu");
 Set($Organization, "CSB");
@@ -118,20 +137,19 @@ Set($WebPort, 443);
 #
 Set($CanonicalizeRedirectURLs, 1);
 
-Set($DatabaseName, 'rt4');
+Set($DatabaseName, 'rt5');
 Set($DatabaseUser, 'rt_user');
-Set($DatabasePassword, '<db_root_passwd>');
+Set($DatabasePassword, 'sbdb');
 
 # Use the below LDAP source for both authentication, as well as user
 # information
-Set( $ExternalAuthPriority, ["VUIT_LDAP"] );
-Set( $ExternalInfoPriority, ["VUIT_LDAP"] );
+Set( $ExternalAuthPriority, ["VUDS"] );
+Set( $ExternalInfoPriority, ["VUDS"] );
 
-# https://docs.bestpractical.com/rt/5.0.2/RT/Authen/ExternalAuth.html
-# https://docs.bestpractical.com/rt/5.0.2/RT/Authen/ExternalAuth/LDAP.html
+# https://docs.bestpractical.com/rt/5.0.3/RT/Authen/ExternalAuth/LDAP.html
 Set($ExternalSettings, {
-        # VUIT LDAP SERVICE
-        'VUIT_LDAP'       =>  {
+        # VUDS Service
+        'VUDS'       =>  {
             'type'                      =>  'ldap',
             'server'                    =>  'ldaps://ldap.vunetid.vanderbilt.edu',
             'user'                      =>  'uid=aaiusevw,ou=special users,dc=vanderbilt,dc=edu',
@@ -149,9 +167,9 @@ Set($ExternalSettings, {
 
             # mapping between RT attribute names and LDAP attribute names
             'attr_map' => {
-                'Name'         => 'uid',
+                'Name'         => 'sAMAccountName',
                 'EmailAddress' => 'mail',
-                'RealName'     => 'cn',
+                'RealName'     => 'displayName',
             },
         },
     } );
@@ -230,13 +248,10 @@ EOI
 chown www-data.www-data  /opt/rt5/etc/RT_Config.pm
 chown -R www-data.www-data /opt/rt5/var/mason_data
 
-# Add packages for higher performance (only html2text will install)
-#dnf install w3m elink links html2text lynx
-
 # Enable and start the web server
 systemctl enable nginx
 systemctl start nginx
 
 # Spawn the RT process 
-spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9000 -- /opt/rt5/sbin/rt-server.fcgi ; echo exit code $? &
+spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9123 -- /opt/rt5/sbin/rt-server.fcgi ; echo exit code $? &
 
