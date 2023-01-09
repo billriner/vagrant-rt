@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
     # CPU execution cap
     vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
     # Description
-    vb.customize ["modifyvm", :id, "--description", ""]
+    vb.customize ["modifyvm", :id, "--description", "Request Tracker"]
 
   end
  
