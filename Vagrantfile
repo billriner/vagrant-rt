@@ -15,8 +15,10 @@ Vagrant.configure("2") do |config|
   # Networking -----------------------------------------------------------------
 
   # Public network (1508 VLAN - MRB3 - 10.2.188.201)
-  config.vm.network "public_network"
-  #config.vm.network "public_network", :bridge => 'en0: Ethernet', :mac => "525400b4c538"
+  #config.vm.network "public_network"
+  
+  # 52-54-00-b4-c5-38 is assigned to 10.2.188.31
+  config.vm.network "public_network", :bridge => 'br0', :mac => "525400b4c538"
 
   # Provider-specific configuration --------------------------------------------
   config.vm.provider "virtualbox" do |vb|
