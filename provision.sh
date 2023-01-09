@@ -7,7 +7,7 @@
 #-------------------------------------------------------------------------------
 
 # Set the hostname
-hostnamectl set-hostname rt.csb.vanderbilt.edu
+hostnamectl set-hostname support.csb.vanderbilt.edu
 
 # Delete the default route on the vagrant interface
 #ip route del default dev eth0
@@ -22,7 +22,7 @@ EOI
 # Set up /etc/motd
 cat > /etc/motd <<EOI
 
-                     *** Welcome to rt ***
+                 *** Welcome to support ***
 
 This system is managed by Vanderbilt CSB. Access is monitored.
            Unauthorized access is strictly prohibited.
