@@ -76,8 +76,8 @@ systemctl start mariadb
 mysql_secure_installation <<-EOI
 
 	y
-	<db_root_passwd>
-	<db_root_passwd>
+	sbdb
+	sbdb
 	y
 	y
 	y
@@ -88,7 +88,7 @@ EOI
 cd /rt-5.0.3/
 make install
 make initialize-database <<-EOI
-	<db_root_passwd>
+	sbdb
 EOI
 
 # Create www-data user
@@ -125,9 +125,6 @@ use utf8;
 # directory.  All files ending in ".pm" will be parsed, in alphabetical order,
 # after this file is loaded.
 
-#Set( $rtname, 'example.com');
-#Set($rtname, 'vm-infr-helpdesk');
-# Tag for RT emails, match previous server
 Set($rtname, 'CSB Help Desk');
 Set($WebDomain, "helpdesk.csb.vanderbilt.edu");
 Set($Organization, "CSB");
@@ -146,14 +143,13 @@ Set($DatabasePassword, 'sbdb');
 
 # Use the below LDAP source for both authentication, as well as user
 # information
-Set( $ExternalAuthPriority, ["VUIT_LDAP"] );
-Set( $ExternalInfoPriority, ["VUIT_LDAP"] );
+Set( $ExternalAuthPriority, ["VUDS"] );
+Set( $ExternalInfoPriority, ["VUDS"] );
 
-# https://docs.bestpractical.com/rt/5.0.2/RT/Authen/ExternalAuth.html
-# https://docs.bestpractical.com/rt/5.0.2/RT/Authen/ExternalAuth/LDAP.html
+# https://docs.bestpractical.com/rt/5.0.3/RT/Authen/ExternalAuth/LDAP.html
 Set($ExternalSettings, {
-        # VUIT LDAP SERVICE
-        'VUIT_LDAP'       =>  {
+        # VUDS Service
+        'VUDS'       =>  {
             'type'                      =>  'ldap',
             'server'                    =>  'ldaps://ldap.vunetid.vanderbilt.edu',
             'user'                      =>  'uid=aaiusevw,ou=special users,dc=vanderbilt,dc=edu',
@@ -171,9 +167,9 @@ Set($ExternalSettings, {
 
             # mapping between RT attribute names and LDAP attribute names
             'attr_map' => {
-                'Name'         => 'uid',
+                'Name'         => 'sAMAccountName',
                 'EmailAddress' => 'mail',
-                'RealName'     => 'cn',
+                'RealName'     => 'displayName',
             },
         },
     } );
