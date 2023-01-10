@@ -6,6 +6,9 @@
 #
 #-------------------------------------------------------------------------------
 
+# RT version
+RT_VER=5.0.3
+
 # Disable SELinux
 sed -i 's/=enforcing/=disabled/' /etc/selinux/config
 
@@ -36,8 +39,10 @@ export RT_FIX_DEPS_CMD=`which cpanm`
 
 # Download the RT software
 cd /
-wget https://download.bestpractical.com/pub/rt/release/rt-5.0.3.tar.gz
-tar xvf rt-5.0.3.tar.gz
+if [ ! -f "rt-5.0.3.tar.gz" ]; then
+  wget https://download.bestpractical.com/pub/rt/release/rt-5.0.3.tar.gz
+  tar xvf rt-5.0.3.tar.gz
+fi
 cd rt-5.0.3/
 
 # Configure the software
