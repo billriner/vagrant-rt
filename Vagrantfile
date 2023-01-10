@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "https://oracle.github.io/vagrant-projects/boxes/oraclelinux/8.json"
 
   # Hostname
-  config.vm.hostname = "rt.csb.vanderbilt.edu"
+  config.vm.hostname = "support.csb.vanderbilt.edu"
 
   # Networking -----------------------------------------------------------------
 
@@ -43,8 +43,27 @@ Vagrant.configure("2") do |config|
   end
  
   # Provisioning with shell scripts --------------------------------------------
-  config.vm.provision "shell", path: "provision.sh"
-  config.vm.provision "shell", path: "nis.sh"
-  config.vm.provision "shell", path: "rt.sh"
+
+  # Set the root password
+  #config.vm.provision "shell",
+  #run: "always",
+  #inline: "echo -n 'Enter the root password: '; \
+  #         read password; \
+  #         echo $password | passwd --stdin root"
+
+  # Fix default gateway
+  config.vm.provision "shell",
+  run: "always",
+  inline: "ip route del default via 10.0.2.2; \
+           ip route add default via 10.2.188.1"
+
+  # General provisioning
+  #config.vm.provision "shell", path: "provision.sh"
+
+  # Configure NIS
+  #config.vm.provision "shell", path: "nis.sh"
+
+  # Install and configure RT
+  #config.vm.provision "shell", path: "rt.sh"
 
 end
