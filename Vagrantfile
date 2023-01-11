@@ -44,12 +44,10 @@ Vagrant.configure("2") do |config|
  
   # Provisioning with shell scripts --------------------------------------------
 
-  # Set the root password
-  #config.vm.provision "shell",
-  #run: "always",
-  #inline: "echo -n 'Enter the root password: '; \
-  #         read password; \
-  #         echo $password | passwd --stdin root"
+  # Allow logins using passwords
+  config.vm.provision "shell",
+  run: "always",
+  inline: "sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config "
 
   # Fix default gateway
   config.vm.provision "shell",
@@ -65,5 +63,10 @@ Vagrant.configure("2") do |config|
 
   # Install and configure RT
   #config.vm.provision "shell", path: "rt.sh"
+
+  # Prompt to set the root password
+  config.vm.provision "shell",
+  run: "always",
+  inline: "echo 'Log in and set the root password.'"
 
 end
