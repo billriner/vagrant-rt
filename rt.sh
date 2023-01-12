@@ -92,6 +92,10 @@ EOI
 # Install RT
 cd /rt-5.0.3/
 make install
+
+# Set the RT user password
+
+
 make initialize-database <<-EOI
 	sbdb
 EOI
