@@ -47,7 +47,8 @@ Vagrant.configure("2") do |config|
   # Allow logins using passwords
   config.vm.provision "shell",
   run: "always",
-  inline: "sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config "
+  inline: "sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config;
+           systemctl restart sshd"
 
   # Fix default gateway
   config.vm.provision "shell",
@@ -57,9 +58,6 @@ Vagrant.configure("2") do |config|
 
   # General provisioning
   #config.vm.provision "shell", path: "provision.sh"
-
-  # Configure NIS
-  #config.vm.provision "shell", path: "nis.sh"
 
   # Install and configure RT
   #config.vm.provision "shell", path: "rt.sh"

@@ -9,9 +9,6 @@
 # Set the hostname
 hostnamectl set-hostname support.csb.vanderbilt.edu
 
-# Delete the default route on the vagrant interface
-#ip route del default dev eth0
-
 # Disable SELinux
 setenforce 0
 cat > /etc/selinux/config <<-EOI
@@ -37,8 +34,8 @@ nameserver 10.2.189.78
 nameserver 10.4.162.82
 EOI
 
-# Update all of the packages
-dnf -y update
-
 # Install the EPEL repo
 dnf -y install https://mirror.umd.edu/fedora/epel/epel-release-latest-8.noarch.rpm
+
+# Update all of the packages
+dnf -y update

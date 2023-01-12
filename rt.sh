@@ -101,7 +101,7 @@ useradd www-data
 
 # Main RT site config file
 mv /opt/rt5/etc/RT_SiteConfig.pm /opt/rt5/etc/RT_SiteConfig.pm.orig
-echo >>/opt/rt5/etc/RT_SiteConfig.pm <<EOI
+cat > /opt/rt5/etc/RT_SiteConfig.pm <<EOI
 use utf8;
 
 # Any configuration directives you include  here will override
@@ -215,12 +215,11 @@ Set($LogToFileNamed , "rt.log"); #log to rt.log
 EOI
 
 # Configure and start the webserver
-echo >> /etc/nginx/nginx.conf <<EOI
+mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
+cat > /etc/nginx/nginx.conf <<EOI
 server {
 	listen 80;
-	server_name helpdesk.csb.vanderbilt.edu
-	#server_name 10.0.64.54;
-
+	server_name support.csb.vanderbilt.edu
 	access_log  /var/log/nginx/access.log;
 
 	location / {
@@ -250,7 +249,7 @@ server {
 EOI
 
 # Set proper ownership
-chown www-data.www-data  /opt/rt5/etc/RT_Config.pm
+chown www-data.www-data /opt/rt5/etc/RT_Config.pm
 chown -R www-data.www-data /opt/rt5/var/mason_data
 
 # Enable and start the web server
