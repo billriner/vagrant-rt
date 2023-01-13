@@ -38,12 +38,12 @@ cpanm --self-upgrade --sudo
 export RT_FIX_DEPS_CMD=`which cpanm`
 
 # Download the RT software
-cd /
-if [ ! -f "rt-5.0.3.tar.gz" ]; then
+cd /root
+if [ ! -f "rt-$RT_VER.tar.gz" ]; then
   wget https://download.bestpractical.com/pub/rt/release/rt-5.0.3.tar.gz
-  tar xvf rt-5.0.3.tar.gz
+  tar xvf rt-$RT_VER.tar.gz
 fi
-cd rt-5.0.3/
+cd rt-$RT_VER
 
 # Configure the software
 ./configure
@@ -62,10 +62,10 @@ EOI
 
 # Install other dependencies
 cpanm --force Date::Extract
+cpanm --force GnuPG::Interface
 dnf -y install perl-LWP-Protocol-https perl-DBD-mysql
 dnf -y install "perl(DBD::mysql)" "perl(LWP::Protocol::https)"
 perl -MCPAN -e shell <<-EOI
-	install GnuPG::Interface
 	install HTML::Element
 	install HTML::FormatText
 	install HTML::TreeBuilder
@@ -90,7 +90,7 @@ mysql_secure_installation <<-EOI
 EOI
 
 # Install RT
-cd /rt-5.0.3/
+cd /rt-$RT_VER
 make install
 
 # Set the RT user password
