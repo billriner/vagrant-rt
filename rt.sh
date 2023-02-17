@@ -161,7 +161,7 @@ Set($ExternalSettings, {
         'VUDS'       =>  {
             'type'                      =>  'ldap',
             'server'                    =>  'ldaps://ldap.vunetid.vanderbilt.edu',
-            'user'                      =>  'uid=aaiusevw,ou=special users,dc=vanderbilt,dc=edu',
+            'user'                      =>  'uid=aaiusesb,ou=special users,dc=vanderbilt,dc=edu',
             'pass'                      =>  'XXXXX',
             'base'                      =>  'ou=people,dc=vanderbilt,dc=edu',
             'filter'                    =>  '(uidNumber=*)',
@@ -223,7 +223,7 @@ mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 cat > /etc/nginx/nginx.conf <<EOI
 server {
 	listen 80;
-	server_name support.csb.vanderbilt.edu
+	server_name helpdesk.csb.vanderbilt.edu
 	access_log  /var/log/nginx/access.log;
 
 	location / {
@@ -262,4 +262,3 @@ systemctl start nginx
 
 # Spawn the RT process 
 spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9123 -- /opt/rt5/sbin/rt-server.fcgi ; echo exit code $? &
-
