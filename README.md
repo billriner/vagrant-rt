@@ -8,7 +8,7 @@ Instructions:
 3. ``vagrant up``
 4. Access the web interface at http://virt2.csb.vanderbilt.edu:8075
 
-Create a Box from once the VM is configured:
+Create a Vagrant box from once the VM is configured:
 
 1. Make the image as small as possible.
 - Clean the yum or dnf cache
