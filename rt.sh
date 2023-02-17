@@ -48,9 +48,6 @@ cd rt-$RT_VER
 # Configure the software
 ./configure
 
-# Check the dependencies
-make testdeps
-
 # Fix the dependencies (may need to do more than once)
 make fixdeps <<-EOI
         y
@@ -72,6 +69,9 @@ perl -MCPAN -e shell <<-EOI
 	install HTML::FormatText::WithLinks
 	install HTML::FormatText::WithLinks::AndTables
 EOI
+
+# Check the dependencies
+make testdeps
 
 # Start the database
 systemctl enable mariadb
@@ -217,38 +217,38 @@ Set($LogToFileNamed , "rt.log"); #log to rt.log
 EOI
 
 # Configure and start the webserver
-mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
-cat > /etc/nginx/nginx.conf <<EOI
-server {
-        listen 80;
-        server_name support.csb.vanderbilt.edu;
-        access_log  /var/log/nginx/access.log;
-
-        location / {
-                fastcgi_param  QUERY_STRING       $query_string;
-                fastcgi_param  REQUEST_METHOD     $request_method;
-                fastcgi_param  CONTENT_TYPE       $content_type;
-                fastcgi_param  CONTENT_LENGTH     $content_length;
-
-                fastcgi_param  SCRIPT_NAME        "";
-                fastcgi_param  PATH_INFO          $uri;
-                fastcgi_param  REQUEST_URI        $request_uri;
-                fastcgi_param  DOCUMENT_URI       $document_uri;
-                fastcgi_param  DOCUMENT_ROOT      $document_root;
-                fastcgi_param  SERVER_PROTOCOL    $server_protocol;
-
-                fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
-                fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
-
-                fastcgi_param  REMOTE_ADDR        $remote_addr;
-                fastcgi_param  REMOTE_PORT        $remote_port;
-                fastcgi_param  SERVER_ADDR        $server_addr;
-                fastcgi_param  SERVER_PORT        $server_port;
-                fastcgi_param  SERVER_NAME        $server_name;
-                fastcgi_pass 10.2.188.31:9000;
-        }
-}
-EOI
+#mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
+#cat > /etc/nginx/nginx.conf <<EOI
+#server {
+#        listen 80;
+#        server_name support.csb.vanderbilt.edu;
+#        access_log  /var/log/nginx/access.log;
+#
+#        location / {
+#                fastcgi_param  QUERY_STRING       $query_string;
+#                fastcgi_param  REQUEST_METHOD     $request_method;
+#                fastcgi_param  CONTENT_TYPE       $content_type;
+#                fastcgi_param  CONTENT_LENGTH     $content_length;
+#
+#                fastcgi_param  SCRIPT_NAME        "";
+#                fastcgi_param  PATH_INFO          $uri;
+#                fastcgi_param  REQUEST_URI        $request_uri;
+#                fastcgi_param  DOCUMENT_URI       $document_uri;
+#                fastcgi_param  DOCUMENT_ROOT      $document_root;
+#                fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+#
+#                fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+#                fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+#
+#                fastcgi_param  REMOTE_ADDR        $remote_addr;
+#                fastcgi_param  REMOTE_PORT        $remote_port;
+#                fastcgi_param  SERVER_ADDR        $server_addr;
+#                fastcgi_param  SERVER_PORT        $server_port;
+#                fastcgi_param  SERVER_NAME        $server_name;
+#                fastcgi_pass 10.2.188.31:9000;
+#        }
+#}
+#EOI
 
 # Set proper ownership
 chown www-data.www-data /opt/rt5/etc/RT_Config.pm
