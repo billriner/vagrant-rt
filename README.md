@@ -6,6 +6,7 @@ Instructions:
 1. git clone https://github.com/billriner/vagrant-rt.git
 2. cd vagrant-rt/
 3. vagrant up
+4. Access the web interface at http://virt2.csb.vanderbilt.edu:80
 
 Create a Box from an Existing Vagrant Environment
 
