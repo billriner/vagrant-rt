@@ -14,8 +14,13 @@ Vagrant.configure("2") do |config|
 
   # Networking -----------------------------------------------------------------
 
+  # IP address
   # 52-54-00-b4-c5-38 is assigned to 10.2.188.31
-  config.vm.network "public_network", :bridge => 'br0', ip: "10.2.188.31", mac: "525400b4c538"
+  config.vm.network "public_network", bridge: "br0", ip: "10.2.188.31", mac: "525400b4c538"
+  #config.vm.network "public_network", :bridge => 'br0', ip: "10.2.188.31", mac: "525400b4c538"
+  
+  # Port forwarding
+  config.vm.network "forwarded_port", guest: 80, host: 8075
 
   # Provider-specific configuration --------------------------------------------
   config.vm.provider "virtualbox" do |vb|
