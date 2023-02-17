@@ -221,7 +221,7 @@ mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 cat > /etc/nginx/nginx.conf <<EOI
 server {
         listen 80;
-        server_name support.csb.vanderbilt.edu
+        server_name support.csb.vanderbilt.edu;
         access_log  /var/log/nginx/access.log;
 
         location / {
