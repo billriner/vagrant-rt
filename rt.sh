@@ -135,7 +135,7 @@ use utf8;
 # after this file is loaded.
 
 Set($rtname, 'CSB Help Desk');
-Set($WebDomain, "helpdesk.csb.vanderbilt.edu");
+Set($WebDomain, "support.csb.vanderbilt.edu");
 Set($Organization, "CSB");
 Set($WebPort, 443);
 # $WebBaseURL should already be computed from $WebDomain and $WebPort
@@ -223,7 +223,7 @@ mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 cat > /etc/nginx/nginx.conf <<EOI
 server {
 	listen 80;
-	server_name helpdesk.csb.vanderbilt.edu
+	server_name support.csb.vanderbilt.edu
 	access_log  /var/log/nginx/access.log;
 
 	location / {
