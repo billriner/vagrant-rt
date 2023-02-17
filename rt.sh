@@ -78,15 +78,15 @@ systemctl enable mariadb
 systemctl start mariadb
 
 # Run secure installation
-mysql_secure_installation <<-EOI
+mysql_secure_installation <<EOI
 
-	y
-	sbdb
-	sbdb
-	y
-	y
-	y
-	y
+y
+sbdb
+sbdb
+y
+y
+y
+y
 EOI
 
 # Install RT
@@ -94,10 +94,8 @@ cd /rt-$RT_VER
 make install
 
 # Set the RT user password
-
-
-make initialize-database <<-EOI
-	sbdb
+make initialize-database <<EOI
+sbdb
 EOI
 
 # Create www-data user
@@ -222,33 +220,33 @@ EOI
 mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 cat > /etc/nginx/nginx.conf <<EOI
 server {
-	listen 80;
-	server_name support.csb.vanderbilt.edu
-	access_log  /var/log/nginx/access.log;
+        listen 80;
+        server_name support.csb.vanderbilt.edu
+        access_log  /var/log/nginx/access.log;
 
-	location / {
-		fastcgi_param  QUERY_STRING       $query_string;
-		fastcgi_param  REQUEST_METHOD     $request_method;
-		fastcgi_param  CONTENT_TYPE       $content_type;
-		fastcgi_param  CONTENT_LENGTH     $content_length;
+        location / {
+                fastcgi_param  QUERY_STRING       $query_string;
+                fastcgi_param  REQUEST_METHOD     $request_method;
+                fastcgi_param  CONTENT_TYPE       $content_type;
+                fastcgi_param  CONTENT_LENGTH     $content_length;
 
-		fastcgi_param  SCRIPT_NAME        "";
-		fastcgi_param  PATH_INFO          $uri;
-		fastcgi_param  REQUEST_URI        $request_uri;
-		fastcgi_param  DOCUMENT_URI       $document_uri;
-		fastcgi_param  DOCUMENT_ROOT      $document_root;
-		fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+                fastcgi_param  SCRIPT_NAME        "";
+                fastcgi_param  PATH_INFO          $uri;
+                fastcgi_param  REQUEST_URI        $request_uri;
+                fastcgi_param  DOCUMENT_URI       $document_uri;
+                fastcgi_param  DOCUMENT_ROOT      $document_root;
+                fastcgi_param  SERVER_PROTOCOL    $server_protocol;
 
-		fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
-		fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
+                fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+                fastcgi_param  SERVER_SOFTWARE    nginx/$nginx_version;
 
-		fastcgi_param  REMOTE_ADDR        $remote_addr;
-		fastcgi_param  REMOTE_PORT        $remote_port;
-		fastcgi_param  SERVER_ADDR        $server_addr;
-		fastcgi_param  SERVER_PORT        $server_port;
-		fastcgi_param  SERVER_NAME        $server_name;
-		fastcgi_pass 10.0.64.54:9000;
-	}
+                fastcgi_param  REMOTE_ADDR        $remote_addr;
+                fastcgi_param  REMOTE_PORT        $remote_port;
+                fastcgi_param  SERVER_ADDR        $server_addr;
+                fastcgi_param  SERVER_PORT        $server_port;
+                fastcgi_param  SERVER_NAME        $server_name;
+                fastcgi_pass 10.2.188.31:9000;
+        }
 }
 EOI
 
