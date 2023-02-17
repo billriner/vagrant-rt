@@ -39,3 +39,6 @@ dnf -y install https://mirror.umd.edu/fedora/epel/epel-release-latest-8.noarch.r
 
 # Update all of the packages
 dnf -y update
+
+# Install other required packages
+dnf -y install bind-utils net-tools
