@@ -3,6 +3,11 @@ Vagrantfile and provisioning scripts to set up Request Tracker
 
 Instructions:
 
+Open port 8075/tcp on the virtual host (virt2)
+  - ```firewall-cmd --permanent --add-port=8075/tcp```
+  - ```firewall-cmd --reload```
+
+Bring up the VM
 1. ```git clone https://github.com/billriner/vagrant-rt.git```
 2. ```cd vagrant-rt/```
 3. ```vagrant up```
@@ -10,9 +15,6 @@ Instructions:
   - ```vagrant ssh```
   - ```sudo su -```
   - ```passwd```
-4. Open port 8075/tcp on the virtual host (virt2)
-  - ```firewall-cmd --permanent --add-port=8075/tcp```
-  - ```firewall-cmd --reload```
 5. Add the VUDS resource account password to /opt/rt5/etc/RT_SiteConfig.pm
 6. Restart the web server
   - ```systemctl restart nginx```
