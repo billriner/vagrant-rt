@@ -48,7 +48,7 @@ cd rt-$RT_VER
 # Configure the software
 ./configure
 
-# Fix the dependencies (may need to do more than once)
+# Fix the dependencies
 make fixdeps <<-EOI
         y
         n
@@ -94,6 +94,8 @@ cd /rt-$RT_VER
 make install
 
 # Set the RT user password
+mkdir /var/log/rt
+chown -R www-data.www-data /var/log/rt/
 make initialize-database <<EOI
 sbdb
 EOI
@@ -258,7 +260,7 @@ EOI
 #EOI
 
 # Set proper ownership
-chown www-data.www-data /opt/rt5/etc/RT_Config.pm
+chown www-data.www-data /opt/rt5/etc/RT_SiteConfig.pm
 chown -R www-data.www-data /opt/rt5/var/mason_data
 
 # Enable and start the web server
