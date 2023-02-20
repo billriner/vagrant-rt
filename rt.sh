@@ -103,7 +103,7 @@ useradd www-data
 
 # Main RT site config file
 mv /opt/rt5/etc/RT_SiteConfig.pm /opt/rt5/etc/RT_SiteConfig.pm.orig
-cat > /opt/rt5/etc/RT_SiteConfig.pm <<EOI
+cat > /opt/rt5/etc/RT_SiteConfig.pm <<'EOI'
 use utf8;
 
 # Any configuration directives you include  here will override
@@ -155,30 +155,37 @@ Set( $ExternalInfoPriority, ["VUDS"] );
 
 # https://docs.bestpractical.com/rt/5.0.3/RT/Authen/ExternalAuth/LDAP.html
 Set($ExternalSettings, {
-        # VUDS Service
-        'VUDS'       =>  {
-            'type'                      =>  'ldap',
-            'server'                    =>  'ldaps://ldap.vunetid.vanderbilt.edu',
-            'user'                      =>  'uid=aaiusesb,ou=special users,dc=vanderbilt,dc=edu',
-            'pass'                      =>  'XXXXX',
-            'base'                      =>  'ou=people,dc=vanderbilt,dc=edu',
-            'filter'                    =>  '(uidNumber=*)',
-            # to-do: define 'group', 'group_*' settings to limit to just ACCRE rather than any valid VUnetID
+    # AN EXAMPLE LDAP SERVICE
+    'VUDS'       =>  {
+        'type'            =>  'ldap',
 
-            # RT attributes that can uniquely ID user, must be defined in 'attr_map'
-            # Note email from eLDAP is going to be @vanderbilt.edu addresses but most staff RT accounts use @accre.vanderbilt.edu addresses
-            'attr_match_list' => [
-                'Name',
-                #'EmailAddress',
-            ],
+        'server'          =>  'ldaps://vuds.vanderbilt.edu',
+        'user'            =>  'CN=aaiusesb,OU=Users,OU=Accounts,DC=vuds,DC=vanderbilt,DC=edu',
+        'pass'            =>  'aRQ1t3C5UrDviV',
 
-            # mapping between RT attribute names and LDAP attribute names
-            'attr_map' => {
-                'Name'         => 'sAMAccountName',
-                'EmailAddress' => 'mail',
-                'RealName'     => 'displayName',
-            },
+        'base'                      =>  'dc=vuds,dc=vanderbilt,dc=edu',
+        'filter'                    =>  '(uid=*)',
+        'd_filter'                  =>  '',
+
+        'group'                     =>  '',
+        'group_attr'                =>  '',
+
+        'tls'                       =>  { verify => "require", cafile => "/path/to/ca.pem" },
+
+        'net_ldap_args'             => [    version =>  3   ],
+
+        'attr_match_list' => [
+            'Name',
+            'EmailAddress',
+        ],
+        'attr_map' => {
+            'Name' => 'uid',
+            'EmailAddress' => 'mail',
+            'Organization' => 'department',
+            'RealName' => 'displayName',
+            'WorkPhone' => 'telephoneNumber'
         },
+    },
     } );
 
 # I think this will allow login of users(and bots) without LDAP credentials to login with internal RT credentials
