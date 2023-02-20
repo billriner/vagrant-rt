@@ -269,3 +269,9 @@ systemctl start nginx
 
 # Spawn the RT process 
 spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9123 -- /opt/rt5/sbin/rt-server.fcgi ; echo exit code $? &
+
+# Set up the RT cron jobs
+(crontab -l ; echo "0 0 * * * root /opt/rt5/sbin/rt-clean-sessions") | crontab -
+(crontab -l ; echo "0 0 * * * root /opt/rt5/sbin/rt-email-digest -m daily") | crontab -
+(crontab -l ; echo "0 0 * * 0 root /opt/rt5/sbin/rt-email-digest -m weekly") | crontab -
+(crontab -l ; echo "0 * * * * root /opt/rt5/sbin/rt-email-dashboards") | crontab -
