@@ -6,10 +6,14 @@ Instructions:
 1. ```git clone https://github.com/billriner/vagrant-rt.git```
 2. ```cd vagrant-rt/```
 3. ```vagrant up```
+4. Set the root password in the VM
+  - ```vagrant ssh```
+  - ```sudo su -```
+  - ```passwd```
 4. Open port 8075/tcp on the virtual host (virt2)
   - ```firewall-cmd --permanent --add-port=8075/tcp```
   - ```firewall-cmd --reload```
-5. Add the VUDS resource account to /opt/rt5/etc/RT_SiteConfig.pm
+5. Add the VUDS resource account password to /opt/rt5/etc/RT_SiteConfig.pm
 6. Restart the web server
   - ```systemctl restart nginx```
 7. Access the web interface at http://virt2.csb.vanderbilt.edu:8075
