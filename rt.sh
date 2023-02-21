@@ -2,7 +2,7 @@
 
 #-------------------------------------------------------------------------------
 #
-# rt.sh - Install RT 5.1
+# rt.sh - Install RT 5.0
 #
 #-------------------------------------------------------------------------------
 
@@ -259,9 +259,8 @@ useradd www-data
 #}
 #EOI
 
-# Set proper ownership
-chown www-data.www-data /opt/rt5/etc/RT_SiteConfig.pm
-chown -R www-data.www-data /opt/rt5/var/mason_data
+# Add www-data to the apache group
+modgrp -a -G www-data apache
 
 # Enable and start the web server
 systemctl enable nginx
