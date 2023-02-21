@@ -277,5 +277,25 @@ spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9123 -- /opt/rt5/sbin/rt-se
 
 # Configure the RT email gateway
 
+cat >> /etc/aliases <<EOI
+
+# RT aliases
+admin-todo: "|rt-mailgate --queue admin-todo --action correspond --url https://structbio.vanderbilt.edu/rt" 
+admin-todo-comment: "|rt-mailgate --queue admin-todo --action comment --url https://structbio.vanderbilt.edu/rt" 
+nmr-help: "|rt-mailgate --queue nmr --action correspond --url https://structbio.vanderbilt.edu/rt" 
+nmr-comment: "|rt-mailgate --queue nmr --action comment --url https://structbio.vanderbilt.edu/rt" 
+#support: "|rt-mailgate --queue support --action correspond --url https://structbio.vanderbilt.edu/rt" 
+support: "|newSpamCatcher.pl"
+support-comment: "|rt-mailgate --queue support --action comment --url https://structbio.vanderbilt.edu/rt" 
+mlpcn: "|rt-mailgate --queue mlpcn --action correspond --url https://structbio.vanderbilt.edu/rt" 
+mlpcn-comment: "|rt-mailgate --queue mlpcn --action comment --url https://structbio.vanderbilt.edu/rt" 
+resource: "|rt-mailgate --queue resource --action correspond --url https://structbio.vanderbilt.edu/rt" 
+resource-comment: "|rt-mailgate --queue resource --action comment --url https://structbio.vanderbilt.edu/rt" 
+xtal-help: "|rt-mailgate --queue xtal --action correspond --url https://structbio.vanderbilt.edu/rt" 
+xtal-comment: "|rt-mailgate --queue xtal --action comment --url https://structbio.vanderbilt.edu/rt" 
+vcndd: "|rt-mailgate --queue vcndd --action correspond --url https://structbio.vanderbilt.edu/rt" 
+vcndd-comment: "|rt-mailgate --queue vcndd --action comment --url https://structbio.vanderbilt.edu/rt" 
+EOI
+
 # Update the location database
 updatedb
