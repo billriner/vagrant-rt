@@ -215,15 +215,15 @@ Set($LogToFileNamed , "rt.log"); #log to rt.log
 1;
 EOI
 
+# Create www-data user
+useradd www-data
+
 # Set the RT user password
 mkdir /var/log/rt
 chown -R www-data.www-data /var/log/rt/
 make initialize-database <<EOI
 sbdb
 EOI
-
-# Create www-data user
-useradd www-data
 
 # Configure and start the webserver
 #mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
