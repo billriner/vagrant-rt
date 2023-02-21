@@ -259,8 +259,8 @@ useradd www-data
 #}
 #EOI
 
-# Add www-data to the apache group
-modgrp -a -G www-data apache
+# Add the www-data user to the apache group
+usermod -a -G apache www-data
 
 # Enable and start the web server
 systemctl enable nginx
