@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
            ip route add default via 10.2.188.1"
 
   # General provisioning
-  #config.vm.provision "shell", path: "provision.sh"
+  config.vm.provision "shell", path: "provision.sh"
 
   # Install and configure RT
   #config.vm.provision "shell", path: "rt.sh"
