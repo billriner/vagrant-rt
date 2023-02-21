@@ -21,7 +21,7 @@ dnf -y install epel-release
 #  Installed required packages
 dnf -y install gcc gcc-c++ expat-devel mariadb mariadb-server nginx perl perl-Devel-Peek perl-Encode-devel perl-open perl-CPAN spawn-fcgi wget w3m
 
-dnf -y install expat gd graphviz openssl expat-devel gd-devel \
+dnf -y install expat gd graphviz openssl expat-devel gd-devel mlocate \
   openssl-devel perl-YAML wget screen \
   mod_fcgid perl-libwww-perl perl-Plack perl-GD \
   perl-GnuPG-Interface perl-GraphViz perl-Crypt-SMIME  \
@@ -90,18 +90,8 @@ y
 EOI
 
 # Install RT
-cd /rt-$RT_VER
+cd /root/rt-$RT_VER
 make install
-
-# Set the RT user password
-mkdir /var/log/rt
-chown -R www-data.www-data /var/log/rt/
-make initialize-database <<EOI
-sbdb
-EOI
-
-# Create www-data user
-useradd www-data
 
 # Main RT site config file
 mv /opt/rt5/etc/RT_SiteConfig.pm /opt/rt5/etc/RT_SiteConfig.pm.orig
@@ -225,6 +215,16 @@ Set($LogToFileNamed , "rt.log"); #log to rt.log
 1;
 EOI
 
+# Set the RT user password
+mkdir /var/log/rt
+chown -R www-data.www-data /var/log/rt/
+make initialize-database <<EOI
+sbdb
+EOI
+
+# Create www-data user
+useradd www-data
+
 # Configure and start the webserver
 #mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.orig
 #cat > /etc/nginx/nginx.conf <<EOI
@@ -275,3 +275,8 @@ spawn-fcgi -n -d /opt/rt5 -u www-data -g www-data -p 9123 -- /opt/rt5/sbin/rt-se
 (crontab -l ; echo "0 0 * * * root /opt/rt5/sbin/rt-email-digest -m daily") | crontab -
 (crontab -l ; echo "0 0 * * 0 root /opt/rt5/sbin/rt-email-digest -m weekly") | crontab -
 (crontab -l ; echo "0 * * * * root /opt/rt5/sbin/rt-email-dashboards") | crontab -
+
+# Configure the RT email gateway
+
+# Update the location database
+updatedb
